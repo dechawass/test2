@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <!-- Link page-->
+   <a href="index.html">Homepage</a>
+   <a href="youtube.html">Youtube</a>
+   <a href="map.html">Map</a>
+   <a href="qgis2web.html">qgis2wep</a>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/THA_adm1_1.js"></script>
+        <script src="data/MappingControl_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[6.199714501500049,92.42571476161925],[20.76844343850005,111.02706786838084]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_DarkMatter_0');
+        map.getPane('pane_DarkMatter_0').style.zIndex = 400;
+        var layer_DarkMatter_0 = L.tileLayer('http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+            pane: 'pane_DarkMatter_0',
+            opacity: 1.0,
+            attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_DarkMatter_0;
+        map.addLayer(layer_DarkMatter_0);
+        function pop_THA_adm1_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_0'] !== null ? autolinker.link(String(feature.properties['ID_0']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ISO'] !== null ? autolinker.link(String(feature.properties['ISO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME_0'] !== null ? autolinker.link(String(feature.properties['NAME_0']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_1'] !== null ? autolinker.link(String(feature.properties['ID_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME_1'] !== null ? autolinker.link(String(feature.properties['NAME_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TYPE_1'] !== null ? autolinker.link(String(feature.properties['TYPE_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENGTYPE_1'] !== null ? autolinker.link(String(feature.properties['ENGTYPE_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NL_NAME_1'] !== null ? autolinker.link(String(feature.properties['NL_NAME_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VARNAME_1'] !== null ? autolinker.link(String(feature.properties['VARNAME_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_THA_adm1_1_0() {
+            return {
+                pane: 'pane_THA_adm1_1',
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_THA_adm1_1');
+        map.getPane('pane_THA_adm1_1').style.zIndex = 401;
+        map.getPane('pane_THA_adm1_1').style['mix-blend-mode'] = 'normal';
+        var layer_THA_adm1_1 = new L.geoJson(json_THA_adm1_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_THA_adm1_1',
+            layerName: 'layer_THA_adm1_1',
+            pane: 'pane_THA_adm1_1',
+            onEachFeature: pop_THA_adm1_1,
+            style: style_THA_adm1_1_0,
+        });
+        bounds_group.addLayer(layer_THA_adm1_1);
+        map.addLayer(layer_THA_adm1_1);
+        function pop_MappingControl_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['road_code'] !== null ? autolinker.link(String(feature.properties['road_code']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['section_na'] !== null ? autolinker.link(String(feature.properties['section_na']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['section_co'] !== null ? autolinker.link(String(feature.properties['section_co']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['number_'] !== null ? autolinker.link(String(feature.properties['number_']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['kilometer'] !== null ? autolinker.link(String(feature.properties['kilometer']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['lt_rt'] !== null ? autolinker.link(String(feature.properties['lt_rt']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['lat'] !== null ? autolinker.link(String(feature.properties['lat']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['long_'] !== null ? autolinker.link(String(feature.properties['long_']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['location_d'] !== null ? autolinker.link(String(feature.properties['location_d']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['create_dat'] !== null ? autolinker.link(String(feature.properties['create_dat']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['province_n'] !== null ? autolinker.link(String(feature.properties['province_n']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['geo_name'] !== null ? autolinker.link(String(feature.properties['geo_name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_MappingControl_2_0(feature) {
+            switch(String(feature.properties['province_n'])) {
+                case 'กระบี่':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,220,38,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'กรุงเทพมหานคร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(23,230,154,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'กาญจนบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,121,193,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'กาฬสินธุ์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,61,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'กำแพงเพชร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,211,55,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ขอนแก่น':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(54,238,18,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'จันทบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,160,131,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ฉะเชิงเทรา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(34,236,95,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ชลบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,199,214,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ชัยนาท':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,196,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ชัยภูมิ':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,82,206,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ชุมพร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(75,200,13,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'เชียงราย':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,125,161,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'เชียงใหม่':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(119,103,207,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ตรัง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,130,231,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ตราด':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,220,82,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ตาก':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,201,69,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครนายก':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,60,140,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครปฐม':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,204,238,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครพนม':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,238,192,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครราชสีมา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,124,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครศรีธรรมราช':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(76,209,64,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นครสวรรค์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(102,32,214,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'นนทบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(104,240,135,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'น่าน':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,68,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'บึงกาฬ':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,232,152,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'บุรีรัมย์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,195,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ปทุมธานี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,106,23,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ประจวบคีรีขันธ์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(75,213,195,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ปราจีนบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(178,61,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พระนครศรีอยุธยา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,82,210,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พะเยา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,106,226,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พังงา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,128,231,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พัทลุง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,107,129,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พิจิตร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,200,45,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'พิษณุโลก':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,177,73,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'เพชรบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(155,227,104,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'เพชรบูรณ์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,124,26,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'แพร่':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,80,70,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ภูเก็ต':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,116,140,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'มหาสารคาม':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(115,214,82,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'มุกดาหาร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,110,94,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'แม่ฮ่องสอน':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(191,211,102,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ยโสธร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,212,133,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ร้อยเอ็ด':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,239,112,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ระนอง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,120,131,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ระยอง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,32,103,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ราชบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(18,213,203,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ลพบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,195,34,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ลำปาง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(142,135,240,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ลำพูน':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,108,166,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'เลย':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(149,21,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ศรีสะเกษ':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,74,209,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สกลนคร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,208,126,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สงขลา':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(111,175,221,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สตูล':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,198,105,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สมุทรปราการ':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,226,65,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สมุทรสงคราม':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,188,237,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สมุทรสาคร':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,72,23,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สระแก้ว':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,102,234,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สระบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,124,223,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สิงห์บุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,124,50,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สุโขทัย':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,219,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สุพรรณบุรี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(155,70,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สุราษฎร์ธานี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,205,53,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'สุรินทร์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,71,73,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'หนองคาย':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,208,182,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'หนองบัวลำภู':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,205,103,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อ่างทอง':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(85,141,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อำนาจเจริญ':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,157,235,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อุดรธานี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,84,206,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อุตรดิตถ์':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,239,72,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อุทัยธานี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(189,102,202,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'อุบลราชธานี':
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,105,224,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_MappingControl_2',
+                radius: 2.0000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,114,192,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_MappingControl_2');
+        map.getPane('pane_MappingControl_2').style.zIndex = 402;
+        map.getPane('pane_MappingControl_2').style['mix-blend-mode'] = 'normal';
+        var layer_MappingControl_2 = new L.geoJson(json_MappingControl_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MappingControl_2',
+            layerName: 'layer_MappingControl_2',
+            pane: 'pane_MappingControl_2',
+            onEachFeature: pop_MappingControl_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_MappingControl_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_MappingControl_2);
+        map.addLayer(layer_MappingControl_2);
+        var overlaysTree = [
+            {label: 'Mapping Control<br /><table><tr><td style="text-align: center;"><img src="legend/MappingControl_2_กระบ0.png" /></td><td>กระบี่</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_กรงเทพมหานคร1.png" /></td><td>กรุงเทพมหานคร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_กาญจนบร2.png" /></td><td>กาญจนบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_กาฬสนธ3.png" /></td><td>กาฬสินธุ์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_กำแพงเพชร4.png" /></td><td>กำแพงเพชร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ขอนแกน5.png" /></td><td>ขอนแก่น</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_จนทบร6.png" /></td><td>จันทบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ฉะเชงเทรา7.png" /></td><td>ฉะเชิงเทรา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ชลบร8.png" /></td><td>ชลบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ชยนาท9.png" /></td><td>ชัยนาท</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ชยภม10.png" /></td><td>ชัยภูมิ</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ชมพร11.png" /></td><td>ชุมพร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_เชยงราย12.png" /></td><td>เชียงราย</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_เชยงใหม13.png" /></td><td>เชียงใหม่</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ตรง14.png" /></td><td>ตรัง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ตราด15.png" /></td><td>ตราด</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ตาก16.png" /></td><td>ตาก</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครนายก17.png" /></td><td>นครนายก</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครปฐม18.png" /></td><td>นครปฐม</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครพนม19.png" /></td><td>นครพนม</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครราชสมา20.png" /></td><td>นครราชสีมา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครศรธรรมราช21.png" /></td><td>นครศรีธรรมราช</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นครสวรรค22.png" /></td><td>นครสวรรค์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นนทบร23.png" /></td><td>นนทบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_นาน24.png" /></td><td>น่าน</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_บงกาฬ25.png" /></td><td>บึงกาฬ</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_บรรมย26.png" /></td><td>บุรีรัมย์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ปทมธาน27.png" /></td><td>ปทุมธานี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ประจวบครขนธ28.png" /></td><td>ประจวบคีรีขันธ์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ปราจนบร29.png" /></td><td>ปราจีนบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พระนครศรอยธยา30.png" /></td><td>พระนครศรีอยุธยา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พะเยา31.png" /></td><td>พะเยา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พงงา32.png" /></td><td>พังงา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พทลง33.png" /></td><td>พัทลุง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พจตร34.png" /></td><td>พิจิตร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_พษณโลก35.png" /></td><td>พิษณุโลก</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_เพชรบร36.png" /></td><td>เพชรบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_เพชรบรณ37.png" /></td><td>เพชรบูรณ์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_แพร38.png" /></td><td>แพร่</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ภเกต39.png" /></td><td>ภูเก็ต</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_มหาสารคาม40.png" /></td><td>มหาสารคาม</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_มกดาหาร41.png" /></td><td>มุกดาหาร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_แมฮองสอน42.png" /></td><td>แม่ฮ่องสอน</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ยโสธร43.png" /></td><td>ยโสธร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_รอยเอด44.png" /></td><td>ร้อยเอ็ด</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ระนอง45.png" /></td><td>ระนอง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ระยอง46.png" /></td><td>ระยอง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ราชบร47.png" /></td><td>ราชบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ลพบร48.png" /></td><td>ลพบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ลำปาง49.png" /></td><td>ลำปาง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ลำพน50.png" /></td><td>ลำพูน</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_เลย51.png" /></td><td>เลย</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_ศรสะเกษ52.png" /></td><td>ศรีสะเกษ</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สกลนคร53.png" /></td><td>สกลนคร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สงขลา54.png" /></td><td>สงขลา</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สตล55.png" /></td><td>สตูล</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สมทรปราการ56.png" /></td><td>สมุทรปราการ</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สมทรสงคราม57.png" /></td><td>สมุทรสงคราม</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สมทรสาคร58.png" /></td><td>สมุทรสาคร</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สระแกว59.png" /></td><td>สระแก้ว</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สระบร60.png" /></td><td>สระบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สงหบร61.png" /></td><td>สิงห์บุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สโขทย62.png" /></td><td>สุโขทัย</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สพรรณบร63.png" /></td><td>สุพรรณบุรี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สราษฎรธาน64.png" /></td><td>สุราษฎร์ธานี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_สรนทร65.png" /></td><td>สุรินทร์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_หนองคาย66.png" /></td><td>หนองคาย</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_หนองบวลำภ67.png" /></td><td>หนองบัวลำภู</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อางทอง68.png" /></td><td>อ่างทอง</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อำนาจเจรญ69.png" /></td><td>อำนาจเจริญ</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อดรธาน70.png" /></td><td>อุดรธานี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อตรดตถ71.png" /></td><td>อุตรดิตถ์</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อทยธาน72.png" /></td><td>อุทัยธานี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_อบลราชธาน73.png" /></td><td>อุบลราชธานี</td></tr><tr><td style="text-align: center;"><img src="legend/MappingControl_2_74.png" /></td><td></td></tr></table>', layer: layer_MappingControl_2},
+            {label: '<img src="legend/THA_adm1_1.png" /> THA_adm1', layer: layer_THA_adm1_1},
+            {label: "Dark Matter", layer: layer_DarkMatter_0, radioGroup: 'bm' },]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
